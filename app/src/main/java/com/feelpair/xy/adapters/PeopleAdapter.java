@@ -2,13 +2,17 @@ package com.feelpair.xy.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.feelpair.xy.R;
 import com.feelpair.xy.box.People;
+import com.feelpair.xy.handlers.WinTool;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,6 +62,19 @@ public class PeopleAdapter extends BaseAdapter {
         } else {
             womanList.add(obj);
         }
+        refreshPeopleList(manList, womanList);
+    }
+
+    public void deletePeople(People obj) {
+        if (obj.isMan()) {
+            manList.remove(obj);
+        } else {
+            womanList.remove(obj);
+        }
+        refreshPeopleList(manList, womanList);
+    }
+
+    private void refreshPeopleList(List<People> manList, List<People> womanList) {
         Collections.sort(manList);
         Collections.sort(womanList);
         peopleList.removeAll(peopleList);
@@ -102,15 +119,61 @@ public class PeopleAdapter extends BaseAdapter {
             holder.peopleId = (TextView) convertView.findViewById(R.id.peopleItem_peopleId);
             holder.chooseId = (TextView) convertView.findViewById(R.id.peopleItem_chooesId);
             holder.sumText = (TextView) convertView.findViewById(R.id.peopleItem_sumText);
+            holder.deleteBtn = (TextView) convertView.findViewById(R.id.peopleItem_deleteBtn);
+            holder.scroll = (HorizontalScrollView) convertView.findViewById(R.id.peopleItem_scroll);
+            holder.messageLayout = (LinearLayout) convertView.findViewById(R.id.peopleItem_messageLayout);
+
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) holder.messageLayout.getLayoutParams();
+            lp.width = WinTool.getWinWidth(context);
+
             convertView.setTag(holder);
         } else {
             holder = (HolderView) convertView.getTag();
         }
 
+        initScroll(convertView, holder);
         People obj = peopleList.get(position);
         setView(holder, obj);
-
+        serOnDeleteBotton(holder.deleteBtn, obj);
         return convertView;
+    }
+
+    private void serOnDeleteBotton(TextView btn, final People obj) {
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deletePeople(obj);
+                notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void initScroll(View convertView, final HolderView holder) {
+        if (holder.scroll.getScrollX() != 0) {
+            holder.scroll.scrollTo(0, 0);
+        }
+        convertView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_UP:
+                        //获得HorizontalScrollView滑动的水平方向值.
+                        int scrollX = holder.scroll.getScrollX();
+                        //获得操作区域的长度
+                        int actionW = holder.deleteBtn.getWidth();
+                        //注意使用smoothScrollTo,这样效果看起来比较圆滑,不生硬
+                        //如果水平方向的移动值<操作区域的长度的一半,就复原
+                        if (scrollX < actionW / 2) {
+                            holder.scroll.smoothScrollTo(0, 0);
+                        } else {//否则的话显示操作区域
+                            holder.scroll.smoothScrollTo(actionW, 0);
+                        }
+                        return true;
+                }
+                return false;
+            }
+        });
+
     }
 
     private void setView(HolderView holder, People obj) {
@@ -129,6 +192,9 @@ public class PeopleAdapter extends BaseAdapter {
         TextView peopleId;
         TextView chooseId;
         TextView sumText;
+        HorizontalScrollView scroll;
+        LinearLayout messageLayout;
+        TextView deleteBtn;
     }
 
 }

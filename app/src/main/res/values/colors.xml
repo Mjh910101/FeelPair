@@ -11,5 +11,6 @@
     <color name="text_gray_03">#333333</color>
     <color name="woman">#ffadc4</color>
     <color name="man">#00c8fc</color>
+    <color name="red">#FF0000</color>
 
 </resources>

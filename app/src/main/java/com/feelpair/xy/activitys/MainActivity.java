@@ -2,6 +2,7 @@ package com.feelpair.xy.activitys;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,9 @@ import java.util.List;
 
 
 public class MainActivity extends BaseActivity {
+
+    private final static long EXITTIME = 2000;
+    private long EXIT = 0;
 
     @ViewInject(R.id.main_manBtn)
     private TextView manBtn;
@@ -57,6 +61,19 @@ public class MainActivity extends BaseActivity {
 
         mPeopleAdapter = new PeopleAdapter(context);
         dataList.setAdapter(mPeopleAdapter);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            if (System.currentTimeMillis() - EXIT < EXITTIME) {
+                finish();
+            } else {
+                MessageHandler.showToast(context, "再次点击退出");
+            }
+            EXIT = System.currentTimeMillis();
+        }
+        return false;
     }
 
     @OnClick({R.id.main_manBtn, R.id.main_womanBtn, R.id.main_addBtn})
