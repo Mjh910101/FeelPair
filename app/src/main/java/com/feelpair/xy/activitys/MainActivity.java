@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.feelpair.xy.R;
+import com.feelpair.xy.adapters.PeopleAdapter;
 import com.feelpair.xy.box.People;
 import com.feelpair.xy.handlers.ColorHandler;
 import com.feelpair.xy.handlers.MessageHandler;
@@ -41,10 +42,6 @@ public class MainActivity extends BaseActivity {
 
     private boolean gender = People.MAN;
 
-    private List<People> peopleList;
-    private List<People> manList;
-    private List<People> womanList;
-
     private PeopleAdapter mPeopleAdapter;
 
     @Override
@@ -58,11 +55,7 @@ public class MainActivity extends BaseActivity {
     private void initActivity() {
         setGender(People.MAN);
 
-        peopleList = new ArrayList<>();
-        manList = new ArrayList<>();
-        womanList = new ArrayList<>();
-
-        mPeopleAdapter = new PeopleAdapter();
+        mPeopleAdapter = new PeopleAdapter(context);
         dataList.setAdapter(mPeopleAdapter);
     }
 
@@ -88,44 +81,25 @@ public class MainActivity extends BaseActivity {
 
     private void operationPeople() {
         int peopleId = getPeopleId();
-        People people = getHavePeople(peopleId);
+        int chooseId = getChooseId();
+        boolean peopleGender = getGender();
+        People people = mPeopleAdapter.getHavePeople(peopleId, peopleGender);
         if (people != null) {
-            if (!people.addChooseId(getChooseId())) {
-                MessageHandler.showToast(context, "该参加者已选择了 " + getChooseId() + " 号");
+            if (!people.addChooseId(chooseId)) {
+                MessageHandler.showToast(context, "该参加者已选择了 " + chooseId + " 号");
                 return;
             }
         } else {
-            addPeople(createPeople(peopleId));
+            mPeopleAdapter.addPeople(createPeople(peopleId, peopleGender, chooseId));
         }
         mPeopleAdapter.notifyDataSetChanged();
         cleanInput();
     }
 
-    private void addPeople(People obj) {
-        if (obj.isMan()) {
-            manList.add(obj);
-        } else {
-            womanList.add(obj);
-        }
-        Collections.sort(manList);
-        Collections.sort(womanList);
-        peopleList.removeAll(peopleList);
-        peopleList.addAll(manList);
-        peopleList.addAll(womanList);
-    }
 
-    private People getHavePeople(int peopleId) {
-        for (People obj : peopleList) {
-            if (obj.equals(peopleId) && obj.equals(getGender())) {
-                return obj;
-            }
-        }
-        return null;
-    }
-
-    private People createPeople(int peopleId) {
-        People obj = new People(peopleId, getGender());
-        obj.addChooseId(getChooseId());
+    private People createPeople(int peopleId, boolean peopleGender, int chooseId) {
+        People obj = new People(peopleId, peopleGender);
+        obj.addChooseId(chooseId);
         return obj;
     }
 
@@ -171,70 +145,6 @@ public class MainActivity extends BaseActivity {
         } catch (Exception e) {
             return 0;
         }
-    }
-
-    class PeopleAdapter extends BaseAdapter {
-
-        private LayoutInflater inflater;
-
-        public PeopleAdapter() {
-            inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
-
-        @Override
-        public int getCount() {
-            return peopleList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return peopleList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            HolderView holder;
-            if (convertView == null) {
-                convertView = inflater.inflate(
-                        R.layout.layout_people_item, null);
-                holder = new HolderView();
-                holder.peopleId = (TextView) convertView.findViewById(R.id.peopleItem_peopleId);
-                holder.chooseId = (TextView) convertView.findViewById(R.id.peopleItem_chooesId);
-                holder.sumText = (TextView) convertView.findViewById(R.id.peopleItem_sumText);
-                convertView.setTag(holder);
-            } else {
-                holder = (HolderView) convertView.getTag();
-            }
-
-            People obj = peopleList.get(position);
-            setView(holder, obj);
-
-            return convertView;
-        }
-
-        private void setView(HolderView holder, People obj) {
-            holder.peopleId.setText(obj.getIdText());
-            holder.chooseId.setText(obj.getChooseText());
-            holder.sumText.setText(obj.getSumText());
-
-            if (obj.isMan()) {
-                holder.peopleId.setTextColor(People.getManColor(context));
-            } else {
-                holder.peopleId.setTextColor(People.getWomanColor(context));
-            }
-        }
-    }
-
-    class HolderView {
-        TextView peopleId;
-        TextView chooseId;
-        TextView sumText;
     }
 
 }
