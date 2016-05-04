@@ -6,6 +6,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.feelpair.xy.R;
 import com.feelpair.xy.adapters.PeopleAdapter;
 import com.feelpair.xy.box.People;
+import com.feelpair.xy.dialogs.ListDialog;
 import com.feelpair.xy.handlers.ColorHandler;
 import com.feelpair.xy.handlers.MessageHandler;
 import com.feelpair.xy.handlers.TextHandeler;
@@ -31,6 +33,11 @@ public class MainActivity extends BaseActivity {
     private final static long EXITTIME = 2000;
     private long EXIT = 0;
 
+    private final static String PIPEI = "匹配";
+    private final static String TONGJI = "统计";
+    private final static String QINGKONG = "清空";
+    private final static String[] CINTROL = new String[]{PIPEI, TONGJI, QINGKONG};
+
     @ViewInject(R.id.main_manBtn)
     private TextView manBtn;
     @ViewInject(R.id.main_womanBtn)
@@ -46,7 +53,7 @@ public class MainActivity extends BaseActivity {
 
     private boolean gender = People.MAN;
 
-    private PeopleAdapter mPeopleAdapter;
+    private static PeopleAdapter mPeopleAdapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +66,10 @@ public class MainActivity extends BaseActivity {
     private void initActivity() {
         setGender(People.MAN);
 
-        mPeopleAdapter = new PeopleAdapter(context);
+        if (mPeopleAdapter == null) {
+            mPeopleAdapter = new PeopleAdapter();
+        }
+        mPeopleAdapter.setAdapterContext(context);
         dataList.setAdapter(mPeopleAdapter);
     }
 
@@ -76,7 +86,8 @@ public class MainActivity extends BaseActivity {
         return false;
     }
 
-    @OnClick({R.id.main_manBtn, R.id.main_womanBtn, R.id.main_addBtn})
+    @OnClick({R.id.main_manBtn, R.id.main_womanBtn, R.id.main_addBtn
+            , R.id.main_controlBtn})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.main_manBtn:
@@ -88,7 +99,24 @@ public class MainActivity extends BaseActivity {
             case R.id.main_addBtn:
                 operationPeople();
                 break;
+            case R.id.main_controlBtn:
+                showControlList();
+                break;
         }
+    }
+
+    private void showControlList() {
+        ListDialog dialog = new ListDialog(context);
+        dialog.setTitleGone();
+        dialog.setList(CINTROL);
+        dialog.setItemListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                switch (CINTROL[position]) {
+
+                }
+            }
+        });
     }
 
     private void cleanInput() {

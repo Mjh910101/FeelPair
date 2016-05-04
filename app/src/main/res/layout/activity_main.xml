@@ -28,17 +28,17 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:textSize="18dp"
-                android:text="男生" />
+                android:text="男生"
+                android:textSize="18dp" />
 
             <TextView
                 android:id="@+id/main_womanBtn"
                 android:layout_width="0dp"
-                android:textSize="18dp"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="女生" />
+                android:text="女生"
+                android:textSize="18dp" />
 
         </LinearLayout>
 
@@ -67,8 +67,8 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:text="选择了"
-                    android:textSize="15dp"
-                    android:textColor="@color/text_gray_02" />
+                    android:textColor="@color/text_gray_02"
+                    android:textSize="15dp" />
 
                 <EditText
                     android:id="@+id/main_peopleIdInput"
@@ -96,14 +96,14 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="8dp"
-                    android:textSize="16dp"
+                    android:background="@color/man"
                     android:paddingBottom="6dp"
                     android:paddingLeft="12dp"
                     android:paddingRight="12dp"
-                    android:background="@color/man"
                     android:paddingTop="6dp"
                     android:text="添加"
-                    android:textColor="@color/whitle" />
+                    android:textColor="@color/whitle"
+                    android:textSize="16dp" />
 
                 <EditText
                     android:id="@+id/main_chooseIdInput"
@@ -128,6 +128,42 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:background="@color/whitle">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/app_name"
+                android:textColor="@color/text_gray_03"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/main_controlBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/blank_frame"
+                android:paddingBottom="4dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="4dp"
+                android:text="操作"
+                android:textColor="@color/text_gray_02"
+                android:textSize="17dp" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/line_gray" />
+
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -138,13 +174,13 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:layout_marginTop="6dp"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="参加者"
-                android:textSize="16dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="6dp"
-                android:textColor="@color/text_gray_02" />
+                android:textColor="@color/text_gray_02"
+                android:textSize="16dp" />
 
             <View
                 android:layout_width="1dp"
@@ -154,13 +190,13 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:layout_marginTop="6dp"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="心动号码"
-                android:textSize="16dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="6dp"
-                android:textColor="@color/text_gray_02" />
+                android:textColor="@color/text_gray_02"
+                android:textSize="16dp" />
 
             <View
                 android:layout_width="1dp"
@@ -170,13 +206,13 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:layout_marginTop="6dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:textSize="16dp"
                 android:text="总选择人数"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="6dp"
-                android:textColor="@color/text_gray_02" />
+                android:textColor="@color/text_gray_02"
+                android:textSize="16dp" />
 
         </LinearLayout>
 

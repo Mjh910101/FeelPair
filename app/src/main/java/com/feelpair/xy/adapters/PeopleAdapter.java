@@ -54,13 +54,16 @@ public class PeopleAdapter extends BaseAdapter {
     private List<People> peopleList;
     private LayoutInflater inflater;
 
-    public PeopleAdapter(Context context) {
-        this.context = context;
+    public PeopleAdapter() {
         this.manMap = new HashMap<>();
         this.womanMap = new HashMap<>();
         this.manList = new ArrayList<>();
         this.womanList = new ArrayList<>();
         this.peopleList = new ArrayList<>();
+    }
+
+    public void setAdapterContext(Context context){
+        this.context = context;
         this.inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
