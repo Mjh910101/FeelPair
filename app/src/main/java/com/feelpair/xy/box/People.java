@@ -95,11 +95,26 @@ public class People implements Comparable {
         return true;
     }
 
+    public int getChooseSize() {
+        if (chooseIdList.isEmpty()) {
+            return 0;
+        }
+        return chooseIdList.size();
+    }
+
     public boolean isChooseId(int id) {
         if (chooseIdList.isEmpty()) {
             return false;
         }
         return chooseIdList.contains(id);
+    }
+
+    public List<String> getChooseIdListForText() {
+        List<String> list = new ArrayList<>();
+        for (int i : chooseIdList) {
+            list.add(String.valueOf(i) + " 号");
+        }
+        return list;
     }
 
     public boolean equals(int peopleId) {
@@ -135,4 +150,7 @@ public class People implements Comparable {
     }
 
 
+    public void deleteChooseForPosition(int i) {
+        chooseIdList.remove(chooseIdList.get(i));
+    }
 }

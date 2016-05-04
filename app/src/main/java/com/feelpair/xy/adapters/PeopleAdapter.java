@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -12,11 +13,15 @@ import android.widget.TextView;
 
 import com.feelpair.xy.R;
 import com.feelpair.xy.box.People;
+import com.feelpair.xy.dialogs.ListDialog;
+import com.feelpair.xy.handlers.ColorHandler;
 import com.feelpair.xy.handlers.WinTool;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * *
@@ -42,6 +47,8 @@ import java.util.List;
 public class PeopleAdapter extends BaseAdapter {
 
     private Context context;
+    private Map<Integer, People> manMap;
+    private Map<Integer, People> womanMap;
     private List<People> manList;
     private List<People> womanList;
     private List<People> peopleList;
@@ -49,6 +56,8 @@ public class PeopleAdapter extends BaseAdapter {
 
     public PeopleAdapter(Context context) {
         this.context = context;
+        this.manMap = new HashMap<>();
+        this.womanMap = new HashMap<>();
         this.manList = new ArrayList<>();
         this.womanList = new ArrayList<>();
         this.peopleList = new ArrayList<>();
@@ -59,17 +68,44 @@ public class PeopleAdapter extends BaseAdapter {
     public void addPeople(People obj) {
         if (obj.isMan()) {
             manList.add(obj);
+            manMap.put(obj.getId(), obj);
         } else {
             womanList.add(obj);
+            womanMap.put(obj.getId(), obj);
         }
         refreshPeopleList(manList, womanList);
     }
 
-    public void deletePeople(People obj) {
+    public boolean deletePeople(People obj) {
+        if (obj.getChooseSize() <= 1) {
+            deleteItem(obj);
+            return true;
+        }
+        showDeleteListDialog(obj);
+        return false;
+    }
+
+    private void showDeleteListDialog(final People obj) {
+        final ListDialog dialog = new ListDialog(context);
+        dialog.setTitleGone();
+        dialog.setList(obj.getChooseIdListForText());
+        dialog.setItemListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                obj.deleteChooseForPosition(position);
+                dialog.dismiss();
+                notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void deleteItem(People obj) {
         if (obj.isMan()) {
             manList.remove(obj);
+            manMap.remove(obj.getId());
         } else {
             womanList.remove(obj);
+            womanMap.remove(obj.getId());
         }
         refreshPeopleList(manList, womanList);
     }
@@ -142,8 +178,9 @@ public class PeopleAdapter extends BaseAdapter {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deletePeople(obj);
-                notifyDataSetChanged();
+                if (deletePeople(obj)) {
+                    notifyDataSetChanged();
+                }
             }
         });
     }
