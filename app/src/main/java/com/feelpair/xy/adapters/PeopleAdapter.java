@@ -62,7 +62,7 @@ public class PeopleAdapter extends BaseAdapter {
         this.peopleList = new ArrayList<>();
     }
 
-    public void setAdapterContext(Context context){
+    public void setAdapterContext(Context context) {
         this.context = context;
         this.inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -82,6 +82,7 @@ public class PeopleAdapter extends BaseAdapter {
     public boolean deletePeople(People obj) {
         if (obj.getChooseSize() <= 1) {
             deleteItem(obj);
+            initPeopleSum();
             return true;
         }
         showDeleteListDialog(obj);
@@ -97,6 +98,7 @@ public class PeopleAdapter extends BaseAdapter {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 obj.deleteChooseForPosition(position);
                 dialog.dismiss();
+                initPeopleSum();
                 notifyDataSetChanged();
             }
         });
@@ -116,9 +118,18 @@ public class PeopleAdapter extends BaseAdapter {
     private void refreshPeopleList(List<People> manList, List<People> womanList) {
         Collections.sort(manList);
         Collections.sort(womanList);
-        peopleList.removeAll(peopleList);
+        peopleList.clear();
         peopleList.addAll(manList);
         peopleList.addAll(womanList);
+    }
+
+    public void removeAll() {
+        manMap.clear();
+        womanMap.clear();
+        manList.clear();
+        womanList.clear();
+        peopleList.clear();
+        notifyDataSetChanged();
     }
 
     public People getHavePeople(int peopleId, boolean gender) {
@@ -131,6 +142,60 @@ public class PeopleAdapter extends BaseAdapter {
             }
         }
         return null;
+    }
+
+    public String getCooperateText() {
+        StringBuffer sb = new StringBuffer();
+//        if (manList.size() < womanList.size()) {
+        setCooperateText(sb, manList);
+//        } else {
+//            setCooperateText(sb, womanList);
+//        }
+        return sb.toString();
+    }
+
+    private void setCooperateText(StringBuffer sb, List<People> list) {
+        for (People obj : list) {
+            for (int id : obj.getChooseIdList()) {
+                if (obj.isMan()) {
+                    if (womanMap.containsKey(id)) {
+                        if (womanMap.get(id).isChooseId(obj.getId())) {
+                            sb.append(obj.getIdText() + " 与 " + womanMap.get(id).getIdText() + " 配对成功" + "\n");
+                        }
+                    }
+                } else {
+                    if (manMap.containsKey(id)) {
+                        if (manMap.get(id).isChooseId(obj.getId())) {
+                            sb.append(obj.getIdText() + " 与 " + manMap.get(id).getIdText() + " 配对成功" + "\n");
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void statisticsPeopleSum() {
+        initPeopleSum();
+        for (People obj : peopleList) {
+            for (int id : obj.getChooseIdList()) {
+                if (obj.isMan()) {
+                    if (womanMap.containsKey(id)) {
+                        womanMap.get(id).increaseSum();
+                    }
+                } else {
+                    if (manMap.containsKey(id)) {
+                        manMap.get(id).increaseSum();
+                    }
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    public void initPeopleSum() {
+        for (People obj : peopleList) {
+            obj.initSum();
+        }
     }
 
     @Override

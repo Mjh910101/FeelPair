@@ -54,6 +54,14 @@ public class People implements Comparable {
         }
     }
 
+    public void increaseSum() {
+        sum += 1;
+    }
+
+    public void initSum() {
+        sum = 0;
+    }
+
     public String getIdText() {
         StringBuffer sb = new StringBuffer();
         sb.append(id + "号 ");
@@ -152,5 +160,9 @@ public class People implements Comparable {
 
     public void deleteChooseForPosition(int i) {
         chooseIdList.remove(chooseIdList.get(i));
+    }
+
+    public List<Integer> getChooseIdList() {
+        return chooseIdList;
     }
 }

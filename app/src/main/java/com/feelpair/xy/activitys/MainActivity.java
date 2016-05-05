@@ -16,6 +16,7 @@ import com.feelpair.xy.R;
 import com.feelpair.xy.adapters.PeopleAdapter;
 import com.feelpair.xy.box.People;
 import com.feelpair.xy.dialogs.ListDialog;
+import com.feelpair.xy.dialogs.MessageDialog;
 import com.feelpair.xy.handlers.ColorHandler;
 import com.feelpair.xy.handlers.MessageHandler;
 import com.feelpair.xy.handlers.TextHandeler;
@@ -106,17 +107,33 @@ public class MainActivity extends BaseActivity {
     }
 
     private void showControlList() {
-        ListDialog dialog = new ListDialog(context);
+        final ListDialog dialog = new ListDialog(context);
         dialog.setTitleGone();
         dialog.setList(CINTROL);
         dialog.setItemListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (CINTROL[position]) {
-
+                    case QINGKONG:
+                        mPeopleAdapter.removeAll();
+                        break;
+                    case TONGJI:
+                        mPeopleAdapter.statisticsPeopleSum();
+                        break;
+                    case PIPEI:
+                        showCooperateDialog(mPeopleAdapter.getCooperateText());
+                        break;
                 }
+                dialog.dismiss();
             }
         });
+    }
+
+    private void showCooperateDialog(String text) {
+        MessageDialog dialog = new MessageDialog(context);
+        dialog.setMessage(text);
+        dialog.setLayout(0.8, 0.5);
+        dialog.setCanceledOnTouchOutside(true);
     }
 
     private void cleanInput() {
@@ -128,6 +145,10 @@ public class MainActivity extends BaseActivity {
         int peopleId = getPeopleId();
         int chooseId = getChooseId();
         boolean peopleGender = getGender();
+        if(peopleId<0||chooseId<0){
+            MessageHandler.showToast(context, "信息有误，请重新填写!");
+            return;
+        }
         People people = mPeopleAdapter.getHavePeople(peopleId, peopleGender);
         if (people != null) {
             if (!people.addChooseId(chooseId)) {
@@ -137,6 +158,7 @@ public class MainActivity extends BaseActivity {
         } else {
             mPeopleAdapter.addPeople(createPeople(peopleId, peopleGender, chooseId));
         }
+        mPeopleAdapter.initPeopleSum();
         mPeopleAdapter.notifyDataSetChanged();
         cleanInput();
     }
@@ -180,7 +202,7 @@ public class MainActivity extends BaseActivity {
         try {
             return Integer.valueOf(TextHandeler.getText(peopleIdInput));
         } catch (Exception e) {
-            return 0;
+            return -1;
         }
     }
 
@@ -188,7 +210,7 @@ public class MainActivity extends BaseActivity {
         try {
             return Integer.valueOf(TextHandeler.getText(chooseIdInput));
         } catch (Exception e) {
-            return 0;
+            return -1;
         }
     }
 
