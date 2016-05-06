@@ -47,6 +47,9 @@ public class People implements Comparable {
     }
 
     public String getSumText() {
+        if (sum <= 0) {
+            return "";
+        }
         try {
             return String.valueOf(sum);
         } catch (Exception e) {
