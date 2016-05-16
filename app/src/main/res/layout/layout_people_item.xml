@@ -79,7 +79,7 @@
                 android:gravity="center"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
-                android:text="统计"
+                android:text="匹配"
                 android:textColor="@color/whitle"
                 android:textSize="18dp" />
 
