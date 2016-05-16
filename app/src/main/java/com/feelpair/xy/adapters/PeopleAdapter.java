@@ -258,7 +258,7 @@ public class PeopleAdapter extends BaseAdapter {
                     StringBuffer sb = new StringBuffer();
                     for (People obj : list) {
                         sb.append(obj.getIdText());
-                        sb.append("\n");
+                        sb.append(" , ");
                     }
                     showChoosePeopleLisrDialog(sb.toString());
                 }
