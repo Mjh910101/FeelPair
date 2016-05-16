@@ -130,14 +130,14 @@ public class MainActivity extends BaseActivity {
     }
 
     private void showCooperateDialog(String text) {
+        MessageDialog dialog = new MessageDialog(context);
         if(text.equals("")){
-            MessageHandler.showToast(context,"没有配对成功的结果");
+            dialog.setMessage("没有配对成功的结果");
         }else{
-            MessageDialog dialog = new MessageDialog(context);
             dialog.setMessage(text);
             dialog.setLayout(0.8, 0.5);
-            dialog.setCanceledOnTouchOutside(true);
         }
+        dialog.setCanceledOnTouchOutside(true);
     }
 
     private void cleanInput() {

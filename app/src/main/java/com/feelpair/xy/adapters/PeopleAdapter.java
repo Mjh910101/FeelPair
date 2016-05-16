@@ -14,7 +14,9 @@ import android.widget.TextView;
 import com.feelpair.xy.R;
 import com.feelpair.xy.box.People;
 import com.feelpair.xy.dialogs.ListDialog;
+import com.feelpair.xy.dialogs.MessageDialog;
 import com.feelpair.xy.handlers.ColorHandler;
+import com.feelpair.xy.handlers.MessageHandler;
 import com.feelpair.xy.handlers.WinTool;
 
 import java.util.ArrayList;
@@ -224,8 +226,10 @@ public class PeopleAdapter extends BaseAdapter {
             holder.chooseId = (TextView) convertView.findViewById(R.id.peopleItem_chooesId);
             holder.sumText = (TextView) convertView.findViewById(R.id.peopleItem_sumText);
             holder.deleteBtn = (TextView) convertView.findViewById(R.id.peopleItem_deleteBtn);
+            holder.statisticalBtn = (TextView) convertView.findViewById(R.id.peopleItem_statisticalBtn);
             holder.scroll = (HorizontalScrollView) convertView.findViewById(R.id.peopleItem_scroll);
             holder.messageLayout = (LinearLayout) convertView.findViewById(R.id.peopleItem_messageLayout);
+            holder.btnLayout = (LinearLayout) convertView.findViewById(R.id.peopleItem_btnLayout);
 
             LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) holder.messageLayout.getLayoutParams();
             lp.width = WinTool.getWinWidth(context);
@@ -239,7 +243,51 @@ public class PeopleAdapter extends BaseAdapter {
         People obj = peopleList.get(position);
         setView(holder, obj);
         serOnDeleteBotton(holder.deleteBtn, obj);
+        serOnStatisticalBotton(holder.statisticalBtn, obj);
         return convertView;
+    }
+
+    private void serOnStatisticalBotton(TextView btn, final People obj) {
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<People> list = getChooseItPeopleList(obj);
+                if (list.isEmpty()) {
+                    showChoosePeopleLisrDialog("没有人选择这位参加者");
+                } else {
+                    StringBuffer sb = new StringBuffer();
+                    for (People obj : list) {
+                        sb.append(obj.getIdText());
+                        sb.append("\n");
+                    }
+                    showChoosePeopleLisrDialog(sb.toString());
+                }
+            }
+        });
+    }
+
+    private void showChoosePeopleLisrDialog(String message) {
+        MessageDialog dialog = new MessageDialog(context);
+        dialog.setMessage(message);
+        dialog.setCanceledOnTouchOutside(true);
+    }
+
+    private List<People> getChooseItPeopleList(People obj) {
+        if (obj.isMan()) {
+            return getChooseItPeopleList(womanList, obj);
+        } else {
+            return getChooseItPeopleList(manList, obj);
+        }
+    }
+
+    private List<People> getChooseItPeopleList(List<People> peopleList, People obj) {
+        List<People> list = new ArrayList<>();
+        for (People p : peopleList) {
+            if (p.isChooseId(obj.getId())) {
+                list.add(p);
+            }
+        }
+        return list;
     }
 
     private void serOnDeleteBotton(TextView btn, final People obj) {
@@ -265,7 +313,7 @@ public class PeopleAdapter extends BaseAdapter {
                         //获得HorizontalScrollView滑动的水平方向值.
                         int scrollX = holder.scroll.getScrollX();
                         //获得操作区域的长度
-                        int actionW = holder.deleteBtn.getWidth();
+                        int actionW = holder.btnLayout.getWidth();
                         //注意使用smoothScrollTo,这样效果看起来比较圆滑,不生硬
                         //如果水平方向的移动值<操作区域的长度的一半,就复原
                         if (scrollX < actionW / 2) {
@@ -299,7 +347,9 @@ public class PeopleAdapter extends BaseAdapter {
         TextView sumText;
         HorizontalScrollView scroll;
         LinearLayout messageLayout;
+        LinearLayout btnLayout;
         TextView deleteBtn;
+        TextView statisticalBtn;
     }
 
 }
